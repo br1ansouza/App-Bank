@@ -47,13 +47,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 36,
+    fontSize: 42,
     fontWeight: 'bold',
     color: COLORS.light,
-    marginBottom: 40,
+    marginBottom: 140,
     textShadowColor: '#000',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 5,
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 8,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
   },
   cardImage: {
     width: 300,
@@ -75,13 +77,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.subtle,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 30, // Aumentado para mover a frase mais para baixo
     lineHeight: 24,
   },
   button: {
     backgroundColor: COLORS.accent,
     paddingVertical: 14,
-    paddingHorizontal: 50,
+    paddingHorizontal: 130, // Aumentado para aumentar a largura do botão
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: {
