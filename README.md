@@ -1,5 +1,5 @@
 # 🚧 Projeto em Construção 🚧
 
-![Projeto em Construção](./image.png)
+![Projeto em Construção](assets/em-construcao.png)
 
-Este projeto ainda está em desenvolvimento. Em breve mais atualizações...
+Este projeto ainda está em desenvolvimento. Em breve teremos mais atualizações por aqui!
