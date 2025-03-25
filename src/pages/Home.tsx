@@ -30,7 +30,7 @@ export default function Home() {
         style={styles.button}
         onPress={() => navigation.navigate('Login')}
       >
-        <Text style={styles.buttonText}>Começar</Text>
+        <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
 
       <StatusBar style="light" />
