@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   Animated,
   ImageBackground,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
 import COLORS from '../themes/color';
@@ -93,9 +95,16 @@ export default function Login() {
             />
           </View>
 
-          <View style={styles.forgotPasswordContainer}>
-            <Text style={styles.forgotPasswordText}>forgot your password?</Text>
-          </View>
+          <TouchableOpacity
+            onPress={() =>
+              Platform.OS === 'android' &&
+              ToastAndroid.show('Visit a bank branch to recover your password.', ToastAndroid.LONG)
+            }
+          >
+            <View style={styles.forgotPasswordContainer}>
+              <Text style={styles.forgotPasswordText}>Forgot your password?</Text>
+            </View>
+          </TouchableOpacity>
 
           <TouchableOpacity style={styles.button}>
             <Text style={styles.buttonText}>Sign in</Text>
@@ -163,7 +172,7 @@ const styles = StyleSheet.create({
   gif: {
     width: 40,
     height: 40,
-   },
+  },
   button: {
     backgroundColor: COLORS.primary,
     paddingVertical: 14,

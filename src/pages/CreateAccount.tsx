@@ -8,7 +8,8 @@ import {
     SafeAreaView,
     Animated,
     ImageBackground,
-    Alert,
+    ToastAndroid,
+    Platform,
 } from 'react-native';
 import COLORS from '../themes/color';
 import { Image } from 'react-native';
@@ -38,18 +39,24 @@ export default function CreateAccount() {
 
     const handleSignUp = () => {
         if (!name || !email || !password || !confirm) {
-            Alert.alert('Error', 'Please fill in all fields.');
+            if (Platform.OS === 'android') {
+                ToastAndroid.show('Please fill in all fields.', ToastAndroid.LONG);
+            }
             return;
         }
-
         if (password !== confirm) {
-            Alert.alert('Error', 'Passwords do not match.');
+            if (Platform.OS === 'android') {
+                ToastAndroid.show('Passwords do not match.', ToastAndroid.LONG);
+            }
             return;
         }
+        if (Platform.OS === 'android') {
+            ToastAndroid.show('Account created successfully!', ToastAndroid.LONG);
+        }
 
-        Alert.alert('Success', 'Account created successfully!');
         navigation.navigate('Login');
     };
+
 
     return (
         <ImageBackground source={background} style={styles.background} resizeMode="cover">
@@ -208,7 +215,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 10,
         gap: 8,
-      },
+    },
     input: {
         flex: 1,
         backgroundColor: COLORS.subtle,
