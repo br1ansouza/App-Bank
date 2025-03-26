@@ -8,21 +8,25 @@ import {
     SafeAreaView,
     Animated,
     ImageBackground,
+    Alert,
 } from 'react-native';
 import COLORS from '../themes/color';
 import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const background = require('../../assets/login/background.png');
 
 export default function CreateAccount() {
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
-    const [focusedInput, setFocusedInput] = useState<'email' | 'password' | 'confirm' | null>(null);
+    const [focusedInput, setFocusedInput] = useState<'Name' | 'email' | 'password' | 'confirm' | null>(null);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const navigation = useNavigation<any>();
-
 
     useEffect(() => {
         Animated.timing(fadeAnim, {
@@ -32,6 +36,21 @@ export default function CreateAccount() {
         }).start();
     }, [fadeAnim]);
 
+    const handleSignUp = () => {
+        if (!name || !email || !password || !confirm) {
+            Alert.alert('Error', 'Please fill in all fields.');
+            return;
+        }
+
+        if (password !== confirm) {
+            Alert.alert('Error', 'Passwords do not match.');
+            return;
+        }
+
+        Alert.alert('Success', 'Account created successfully!');
+        navigation.navigate('Login');
+    };
+
     return (
         <ImageBackground source={background} style={styles.background} resizeMode="cover">
             <SafeAreaView style={styles.container}>
@@ -40,6 +59,23 @@ export default function CreateAccount() {
                     <Text style={styles.subtitle}>
                         Create an account so you can explore all the existing features
                     </Text>
+
+                    <View style={styles.inputRow}>
+                        <TextInput
+                            style={[
+                                styles.input,
+                                focusedInput === 'Name' && { borderColor: COLORS.primary },
+                            ]}
+                            placeholder="Full Name"
+                            placeholderTextColor={COLORS.primary}
+                            keyboardType="default"
+                            autoCapitalize="words"
+                            value={name}
+                            onFocus={() => setFocusedInput('Name')}
+                            onBlur={() => setFocusedInput(null)}
+                            onChangeText={setName}
+                        />
+                    </View>
 
                     <View style={styles.inputRow}>
                         <TextInput
@@ -66,12 +102,15 @@ export default function CreateAccount() {
                             ]}
                             placeholder="Password"
                             placeholderTextColor={COLORS.primary}
-                            secureTextEntry
+                            secureTextEntry={!showPassword}
                             value={password}
                             onFocus={() => setFocusedInput('password')}
                             onBlur={() => setFocusedInput(null)}
                             onChangeText={setPassword}
                         />
+                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                            <Icon name={showPassword ? 'eye-off' : 'eye'} size={24} color={COLORS.primary} />
+                        </TouchableOpacity>
                     </View>
 
                     <View style={styles.inputRow}>
@@ -82,17 +121,21 @@ export default function CreateAccount() {
                             ]}
                             placeholder="Confirm Password"
                             placeholderTextColor={COLORS.primary}
-                            secureTextEntry
+                            secureTextEntry={!showConfirmPassword}
                             value={confirm}
                             onFocus={() => setFocusedInput('confirm')}
                             onBlur={() => setFocusedInput(null)}
                             onChangeText={setConfirm}
                         />
+                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                            <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={24} color={COLORS.primary} />
+                        </TouchableOpacity>
                     </View>
 
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity style={styles.button} onPress={handleSignUp}>
                         <Text style={styles.buttonText}>Sign Up</Text>
                     </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 20 }}>
                         <Text style={{ color: COLORS.subtledark, fontSize: 14, fontWeight: 'bold' }}>
                             Already have an account?
@@ -121,8 +164,6 @@ export default function CreateAccount() {
                             />
                         </TouchableOpacity>
                     </View>
-
-
                 </Animated.View>
             </SafeAreaView>
         </ImageBackground>
@@ -145,11 +186,6 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
     },
-    logo: {
-        width: 320,
-        height: 80,
-        marginBottom: 30,
-    },
     title: {
         fontSize: 32,
         fontWeight: '900',
@@ -158,13 +194,21 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         letterSpacing: 1,
     },
-
+    subtitle: {
+        fontSize: 16,
+        color: COLORS.subtledark,
+        textAlign: 'center',
+        marginBottom: 50,
+    },
     inputRow: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         marginBottom: 16,
         width: '100%',
-    },
+        paddingHorizontal: 10,
+        gap: 8,
+      },
     input: {
         flex: 1,
         backgroundColor: COLORS.subtle,
@@ -193,46 +237,26 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
     },
     buttonText: {
-        color: COLORS.subtle,
+        color: COLORS.light,
         fontSize: 16,
         fontWeight: 'bold',
     },
-    subtitle: {
-        fontSize: 16,
-        color: COLORS.subtledark,
-        textAlign: 'center',
-        marginBottom: 50,
-    },
-    loginRedirect: {
-        marginTop: 20,
-        marginBottom: 30,
-      },
-      
-      loginRedirectText: {
-        color: COLORS.subtle,
-        fontSize: 14,
-        fontWeight: 'bold',
-      },
-      
-      socialTitle: {
+    socialTitle: {
         fontSize: 14,
         color: COLORS.subtledark,
         marginBottom: 10,
         marginTop: 80,
-      },
-      
-      socialIconsContainer: {
+    },
+    socialIconsContainer: {
         flexDirection: 'row',
         gap: 20,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-      },
-      
-      socialIcon: {
+    },
+    socialIcon: {
         width: 40,
         height: 40,
         borderRadius: 8,
-      },
-      
+    },
 });

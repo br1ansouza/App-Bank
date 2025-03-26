@@ -163,8 +163,7 @@ const styles = StyleSheet.create({
   gif: {
     width: 40,
     height: 40,
-    borderRadius: 6,
-  },
+   },
   button: {
     backgroundColor: COLORS.primary,
     paddingVertical: 14,
@@ -181,7 +180,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   buttonText: {
-    color: COLORS.subtle,
+    color: COLORS.light,
     fontSize: 16,
     fontWeight: 'bold',
   },
