@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import 'reflect-metadata';
 import userRoutes from './routes/userRoutes';
 import loginRoutes from './routes/loginRoutes';
+import profileRoutes from './routes/profileRoutes';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use('/users', userRoutes);
 app.use('/login', loginRoutes);
+app.use('/profile', profileRoutes);
 
 AppDataSource.initialize()
   .then(() => {
