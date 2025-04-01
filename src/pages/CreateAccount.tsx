@@ -15,11 +15,12 @@ import COLORS from '../themes/color';
 import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import api from '../services/api';
 
 const background = require('../../assets/login/background.png');
 
 export default function CreateAccount() {
-    const [name, setName] = useState('');
+    const [full_name, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
@@ -37,27 +38,32 @@ export default function CreateAccount() {
         }).start();
     }, [fadeAnim]);
 
-    const handleSignUp = () => {
-        if (!name || !email || !password || !confirm) {
-            if (Platform.OS === 'android') {
-                ToastAndroid.show('Please fill in all fields.', ToastAndroid.LONG);
-            }
-            return;
+    const handleSignUp = async () => {
+        if (!full_name || !email || !password || !confirm) {
+          ToastAndroid.show('Please fill in all fields.', ToastAndroid.LONG);
+          return;
         }
         if (password !== confirm) {
-            if (Platform.OS === 'android') {
-                ToastAndroid.show('Passwords do not match.', ToastAndroid.LONG);
-            }
-            return;
+          ToastAndroid.show('Passwords do not match.', ToastAndroid.LONG);
+          return;
         }
-        if (Platform.OS === 'android') {
-            ToastAndroid.show('Account created successfully!', ToastAndroid.LONG);
+      
+        try {
+          const response = await api.post('/users', {
+            full_name,
+            email,
+            password,
+          });
+      
+          const { agency, account } = response.data;
+      
+          navigation.navigate('AccountCreated', { agency, account });
+        } catch (error: any) {
+          console.error(error);
+          ToastAndroid.show('Error creating account.', ToastAndroid.LONG);
         }
-
-        navigation.navigate('Login');
-    };
-
-
+      };
+      
     return (
         <ImageBackground source={background} style={styles.background} resizeMode="cover">
             <SafeAreaView style={styles.container}>
@@ -77,10 +83,10 @@ export default function CreateAccount() {
                             placeholderTextColor={COLORS.primary}
                             keyboardType="default"
                             autoCapitalize="words"
-                            value={name}
+                            value={full_name}
                             onFocus={() => setFocusedInput('Name')}
                             onBlur={() => setFocusedInput(null)}
-                            onChangeText={setName}
+                            onChangeText={setFullName}
                         />
                     </View>
 

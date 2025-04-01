@@ -16,6 +16,8 @@ import COLORS from '../themes/color';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../routes/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../services/api';
 
 
 const agGif = require('../../assets/login/ag.gif');
@@ -26,7 +28,7 @@ const background = require('../../assets/login/background.png');
 export default function Login() {
   const [agency, setAgency] = useState('');
   const [account, setAccount] = useState('');
-  const [focusedInput, setFocusedInput] = useState<'agency' | 'account' | null>(null);
+  const [focusedInput, setFocusedInput] = useState<'agency' | 'account' | 'password' | null>(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -37,6 +39,27 @@ export default function Login() {
       useNativeDriver: true,
     }).start();
   }, [fadeAnim]);
+
+  const handleLogin = async () => {
+    try {
+      const response = await api.post('/login', {
+        agency,
+        account,
+        password,
+      });
+  
+      await AsyncStorage.setItem('token', response.data.token);
+  
+      navigation.navigate('Profile');
+    } catch (error: any) {
+      console.error(error);
+      if (Platform.OS === 'android') {
+        ToastAndroid.show('Login failed. Check your credentials.', ToastAndroid.SHORT);
+      }
+    }
+  };
+
+  const [password, setPassword] = useState('');
 
   const maskAccount = (value: string) => {
     const cleaned = value.replace(/[^0-9]/g, '').slice(0, 8);
@@ -95,6 +118,23 @@ export default function Login() {
             />
           </View>
 
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[
+                styles.input,
+                focusedInput === 'password' && { borderColor: COLORS.primary },
+              ]}
+              placeholder="Password"
+              placeholderTextColor={COLORS.primary}
+              secureTextEntry
+              value={password}
+              onFocus={() => setFocusedInput('password')}
+              onBlur={() => setFocusedInput(null)}
+              onChangeText={setPassword}
+            />
+          </View>
+
+
           <TouchableOpacity
             onPress={() =>
               Platform.OS === 'android' &&
@@ -106,7 +146,7 @@ export default function Login() {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttonText}>Sign in</Text>
           </TouchableOpacity>
 
