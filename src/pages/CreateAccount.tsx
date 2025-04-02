@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    StyleSheet,
-    Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    SafeAreaView,
-    Animated,
-    ImageBackground,
-    ToastAndroid,
-    Platform,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+  Animated,
+  ImageBackground,
+  ToastAndroid,
+  Platform,
 } from 'react-native';
 import COLORS from '../themes/color';
 import { Image } from 'react-native';
@@ -20,167 +20,148 @@ import api from '../services/api';
 const background = require('../../assets/login/background.png');
 
 export default function CreateAccount() {
-    const [full_name, setFullName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirm, setConfirm] = useState('');
-    const [focusedInput, setFocusedInput] = useState<'Name' | 'email' | 'password' | 'confirm' | null>(null);
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-    const navigation = useNavigation<any>();
+  const [full_name, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [focusedInput, setFocusedInput] = useState<'full_name' | 'email' | 'password' | 'confirm' | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const navigation = useNavigation<any>();
 
-    useEffect(() => {
-        Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-        }).start();
-    }, [fadeAnim]);
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
-    const handleSignUp = async () => {
-        if (!full_name || !email || !password || !confirm) {
-          ToastAndroid.show('Please fill in all fields.', ToastAndroid.LONG);
-          return;
-        }
-        if (password !== confirm) {
-          ToastAndroid.show('Passwords do not match.', ToastAndroid.LONG);
-          return;
-        }
-      
-        try {
-          const response = await api.post('/users', {
-            full_name,
-            email,
-            password,
-          });
-      
-          const { agency, account } = response.data;
-      
-          navigation.navigate('AccountCreated', { agency, account });
-        } catch (error: any) {
-          console.error(error);
-          ToastAndroid.show('Error creating account.', ToastAndroid.LONG);
-        }
-      };
-      
-    return (
-        <ImageBackground source={background} style={styles.background} resizeMode="cover">
-            <SafeAreaView style={styles.container}>
-                <Animated.View style={{ ...styles.animatedContainer, opacity: fadeAnim }}>
-                    <Text style={styles.title}>Create Account</Text>
-                    <Text style={styles.subtitle}>
-                        Create an account so you can explore all the existing features
-                    </Text>
+  const handleSignUp = async () => {
+    if (!full_name || !email || !password || !confirm) {
+      ToastAndroid.show('Please fill in all fields.', ToastAndroid.LONG);
+      return;
+    }
+    if (password !== confirm) {
+      ToastAndroid.show('Passwords do not match.', ToastAndroid.LONG);
+      return;
+    }
 
-                    <View style={styles.inputRow}>
-                        <TextInput
-                            style={[
-                                styles.input,
-                                focusedInput === 'Name' && { borderColor: COLORS.primary },
-                            ]}
-                            placeholder="Full Name"
-                            placeholderTextColor={COLORS.primary}
-                            keyboardType="default"
-                            autoCapitalize="words"
-                            value={full_name}
-                            onFocus={() => setFocusedInput('Name')}
-                            onBlur={() => setFocusedInput(null)}
-                            onChangeText={setFullName}
-                        />
-                    </View>
+    try {
+      const response = await api.post('/users', {
+        full_name,
+        email,
+        password,
+      });
 
-                    <View style={styles.inputRow}>
-                        <TextInput
-                            style={[
-                                styles.input,
-                                focusedInput === 'email' && { borderColor: COLORS.primary },
-                            ]}
-                            placeholder="Email"
-                            placeholderTextColor={COLORS.primary}
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            value={email}
-                            onFocus={() => setFocusedInput('email')}
-                            onBlur={() => setFocusedInput(null)}
-                            onChangeText={setEmail}
-                        />
-                    </View>
+      const { agency, account } = response.data;
 
-                    <View style={styles.inputRow}>
-                        <TextInput
-                            style={[
-                                styles.input,
-                                focusedInput === 'password' && { borderColor: COLORS.primary },
-                            ]}
-                            placeholder="Password"
-                            placeholderTextColor={COLORS.primary}
-                            secureTextEntry={!showPassword}
-                            value={password}
-                            onFocus={() => setFocusedInput('password')}
-                            onBlur={() => setFocusedInput(null)}
-                            onChangeText={setPassword}
-                        />
-                        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                            <Icon name={showPassword ? 'eye-off' : 'eye'} size={24} color={COLORS.primary} />
-                        </TouchableOpacity>
-                    </View>
+      navigation.navigate('AccountCreated', {
+        full_name,
+        agency,
+        account,
+      });
+    } catch (error) {
+      console.error(error);
+      ToastAndroid.show('Error creating account.', ToastAndroid.LONG);
+    }
+  };
 
-                    <View style={styles.inputRow}>
-                        <TextInput
-                            style={[
-                                styles.input,
-                                focusedInput === 'confirm' && { borderColor: COLORS.primary },
-                            ]}
-                            placeholder="Confirm Password"
-                            placeholderTextColor={COLORS.primary}
-                            secureTextEntry={!showConfirmPassword}
-                            value={confirm}
-                            onFocus={() => setFocusedInput('confirm')}
-                            onBlur={() => setFocusedInput(null)}
-                            onChangeText={setConfirm}
-                        />
-                        <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                            <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={24} color={COLORS.primary} />
-                        </TouchableOpacity>
-                    </View>
+  return (
+    <ImageBackground source={background} style={styles.background} resizeMode="cover">
+      <SafeAreaView style={styles.container}>
+        <Animated.View style={{ ...styles.animatedContainer, opacity: fadeAnim }}>
+          <Text style={styles.title}>Create Account</Text>
+          <Text style={styles.subtitle}>
+            Create an account so you can explore all the existing features
+          </Text>
 
-                    <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-                        <Text style={styles.buttonText}>Sign Up</Text>
-                    </TouchableOpacity>
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[
+                styles.input,
+                focusedInput === 'full_name' && { borderColor: COLORS.primary },
+              ]}
+              placeholder="Full Name"
+              placeholderTextColor={COLORS.primary}
+              keyboardType="default"
+              autoCapitalize="words"
+              value={full_name}
+              onFocus={() => setFocusedInput('full_name')}
+              onBlur={() => setFocusedInput(null)}
+              onChangeText={setFullName}
+            />
+          </View>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 20 }}>
-                        <Text style={{ color: COLORS.subtledark, fontSize: 14, fontWeight: 'bold' }}>
-                            Already have an account?
-                        </Text>
-                    </TouchableOpacity>
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[
+                styles.input,
+                focusedInput === 'email' && { borderColor: COLORS.primary },
+              ]}
+              placeholder="Email"
+              placeholderTextColor={COLORS.primary}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onFocus={() => setFocusedInput('email')}
+              onBlur={() => setFocusedInput(null)}
+              onChangeText={setEmail}
+            />
+          </View>
 
-                    <Text style={styles.socialTitle}>Or continue with</Text>
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[
+                styles.input,
+                focusedInput === 'password' && { borderColor: COLORS.primary },
+              ]}
+              placeholder="Password"
+              placeholderTextColor={COLORS.primary}
+              secureTextEntry={!showPassword}
+              value={password}
+              onFocus={() => setFocusedInput('password')}
+              onBlur={() => setFocusedInput(null)}
+              onChangeText={setPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <Icon name={showPassword ? 'eye-off' : 'eye'} size={24} color={COLORS.primary} />
+            </TouchableOpacity>
+          </View>
 
-                    <View style={styles.socialIconsContainer}>
-                        <TouchableOpacity>
-                            <Image
-                                source={{ uri: 'https://cdn-icons-png.flaticon.com/128/299/299409.png' }}
-                                style={styles.socialIcon}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Image
-                                source={{ uri: 'https://cdn-icons-png.flaticon.com/128/2175/2175193.png' }}
-                                style={styles.socialIcon}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Image
-                                source={{ uri: 'https://cdn-icons-png.flaticon.com/512/733/733609.png' }}
-                                style={styles.socialIcon}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                </Animated.View>
-            </SafeAreaView>
-        </ImageBackground>
-    );
+          <View style={styles.inputRow}>
+            <TextInput
+              style={[
+                styles.input,
+                focusedInput === 'confirm' && { borderColor: COLORS.primary },
+              ]}
+              placeholder="Confirm Password"
+              placeholderTextColor={COLORS.primary}
+              secureTextEntry={!showConfirmPassword}
+              value={confirm}
+              onFocus={() => setFocusedInput('confirm')}
+              onBlur={() => setFocusedInput(null)}
+              onChangeText={setConfirm}
+            />
+            <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+              <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={24} color={COLORS.primary} />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 20 }}>
+            <Text style={{ color: COLORS.subtledark, fontSize: 14, fontWeight: 'bold' }}>
+              Already have an account?
+            </Text>
+          </TouchableOpacity>
+        </Animated.View>
+      </SafeAreaView>
+    </ImageBackground>
+  );
 }
 
 const styles = StyleSheet.create({
