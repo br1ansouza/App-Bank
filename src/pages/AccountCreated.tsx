@@ -6,19 +6,23 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ToastAndroid,
-  Clipboard,
   Platform,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import COLORS from '../themes/color';
 
 export default function AccountCreated() {
   const navigation = useNavigation<any>();
   const route = useRoute();
-  const { agency, account } = route.params as { agency: string; account: string };
+  const { full_name, agency, account } = route.params as {
+    full_name: string;
+    agency: string;
+    account: string;
+  };
 
-  const copyToClipboard = (value: string, label: string) => {
-    Clipboard.setString(value);
+  const copyToClipboard = async (value: string, label: string) => {
+    await Clipboard.setStringAsync(value);
     if (Platform.OS === 'android') {
       ToastAndroid.show(`${label} copied!`, ToastAndroid.SHORT);
     }
@@ -26,9 +30,13 @@ export default function AccountCreated() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Account Created!</Text>
+      <Text style={styles.title}>Welcome!</Text>
+      <Text style={styles.subtitle}>Your account was successfully created.</Text>
 
       <View style={styles.infoBox}>
+        <Text style={styles.label}>Name</Text>
+        <Text style={styles.value}>{full_name}</Text>
+
         <Text style={styles.label}>Agency</Text>
         <View style={styles.row}>
           <Text style={styles.value}>{agency}</Text>
@@ -65,7 +73,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.primary,
     textAlign: 'center',
-    marginBottom: 40,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: COLORS.subtledark,
+    marginBottom: 30,
+    marginTop: 4,
   },
   infoBox: {
     backgroundColor: COLORS.subtle,
