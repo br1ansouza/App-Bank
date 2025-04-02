@@ -16,6 +16,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/login', loginRoutes);
 app.use('/profile', profileRoutes);
+app.use('/users', userRoutes);
 
 AppDataSource.initialize()
   .then(() => {
