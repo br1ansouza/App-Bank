@@ -35,5 +35,20 @@ export class UserController {
             agency: user.agency,
             account: user.account,
         });
-    }
+    };
+
+    getAll = async (req: Request, res: Response): Promise<Response> => {
+        const userRepo = AppDataSource.getRepository(User);
+        const users = await userRepo.find();
+
+        const safeUsers = users.map(user => ({
+            id: user.id,
+            full_name: user.full_name,
+            email: user.email,
+            agency: user.agency,
+            account: user.account,
+        }));
+
+        return res.status(200).json(safeUsers);
+    };
 }
