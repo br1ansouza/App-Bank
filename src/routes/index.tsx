@@ -6,7 +6,7 @@ import AccountCreated from '../pages/AccountCreated';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import CreateAccount from '../pages/CreateAccount';
-import Profile from '../pages/Profile';
+import Profile from '../pages/Interface';
 
 
 const Stack = createNativeStackNavigator();
