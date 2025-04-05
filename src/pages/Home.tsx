@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import COLORS from '../themes/color';
 
 const background = require('../../assets/login/background.png');
-const logo = require('../../assets/login/logo.png');
+const logo = require('../../assets/login/novalogo.png');
 
 export default function Home() {
   const navigation = useNavigation<any>();

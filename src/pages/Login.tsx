@@ -20,9 +20,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/api';
 
 
-const agGif = require('../../assets/login/ag.gif');
-const ccGif = require('../../assets/login/cc.gif');
-const logo = require('../../assets/login/logo.png');
+const agGif = require('../../assets/login/ag3.gif');
+const ccGif = require('../../assets/login/cc3.gif');
+const keyGif = require('../../assets/login/key3.gif');
+const logo = require('../../assets/login/novalogo.png');
 const background = require('../../assets/login/background.png');
 
 export default function Login() {
@@ -76,8 +77,6 @@ export default function Login() {
         <Animated.View style={{ ...styles.animatedContainer, opacity: fadeAnim }}>
           <Image source={logo} style={styles.logo} contentFit="contain" />
 
-          <Text style={styles.title}>Login</Text>
-
           <View style={styles.inputRow}>
             <Image source={agGif} style={styles.gif} />
             <TextInput
@@ -119,6 +118,7 @@ export default function Login() {
           </View>
 
           <View style={styles.inputRow}>
+          <Image source={keyGif} style={styles.gif} />
             <TextInput
               style={[
                 styles.input,
@@ -181,8 +181,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 320,
-    height: 80,
-    marginBottom: 30,
+    height: 150,
+    marginBottom: 3,
   },
   title: {
     fontSize: 28,
