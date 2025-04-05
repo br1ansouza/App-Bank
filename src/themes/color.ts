@@ -9,6 +9,7 @@ const COLORS = {
     red: '#cc3917',      // #cc3917
     justdark: '#000000', // #000000
     greenday: '#4CAF50',   // #4CAF50
+    background: '#fdf7f1', // #fdf7f1
   };
   
   export default COLORS;
